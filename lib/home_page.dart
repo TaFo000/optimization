@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:optimization/basickMethod.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +12,7 @@ class _HomePageState extends State<HomePage> {
   late int column;
   late int row;
   List<TableRow> rows = [];
+  List<List<double>> matrix = [];
   List<List<TextEditingController>> controllers = [];
   TextEditingController _controllerColumn = TextEditingController();
   TextEditingController _controller = TextEditingController();
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void setData(){
-    List<List<double>> matrix = [];
+
     for (int i = 0; i < row; i++) {
       List<double> rowList = [];
       for (int j = 0; j < column; j++) {
@@ -105,6 +107,10 @@ class _HomePageState extends State<HomePage> {
           GestureDetector(
             onTap: (){
               setData();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BasicMethod(matrix: matrix, row: row, column: column,)));
             },
               child: Text("Данные введены")),
       ],),
