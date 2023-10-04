@@ -34,8 +34,8 @@ class _BasicMethodState extends State<BasicMethod> {
     for (int i = 0; i < matrix.length; i++) {
       matrix[i].removeAt(columnIndex);
     }
-    row = matrix.length;
-    column = matrix[0].length;
+    int row = matrix.length;
+    int column = matrix[0].length;
     setState(() {
       widget.matrix = matrix;
       widget.row = row;
@@ -55,7 +55,7 @@ class _BasicMethodState extends State<BasicMethod> {
     super.initState();
   }
 
-  List<List<double>> createNewMatrixx(List<List<double>> matrix, List<double> currentRow, int row, double currentMainNum, int column) {
+  List<List<double>> createNewMatrix(List<List<double>> matrix, List<double> currentRow, int row, double currentMainNum, int column) {
     int m = matrix.length;
     int n = matrix[0].length;
     newMatrix = List.generate(m, (i) => List<double>.filled(n, 0));
@@ -75,25 +75,7 @@ class _BasicMethodState extends State<BasicMethod> {
     return newMatrix;
   }
 
-  // void createNewMatrix(){
-  //   List<List<double>> createNewMatrix(List<List<double>> matrix, List<double> currentRow, int row, int currentMainNum) {
-  //     int m = matrix.length;
-  //     int n = matrix[0].length;
-  //     List<List<double>> newMatrix = List.generate(m, (i) => List<double>.filled(n, 0));
-  //     for (int i = 0; i < m; i++) {
-  //       if (i == row) {
-  //         for (int j = 0; j < n; j++) {
-  //           newMatrix[i][j] = matrix[i][j] / currentMainNum;
-  //         }
-  //       } else {
-  //         for (int j = 0; j < n; j++) {
-  //           newMatrix[i][j] = matrix[i][j] - currentRow[j] * matrix[row][j] / currentMainNum;
-  //         }
-  //       }
-  //     }
-  //     return newMatrix;
-  //   }
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +85,10 @@ class _BasicMethodState extends State<BasicMethod> {
           border: TableBorder.all(),
           children: List.generate(row, (i) {
             return TableRow(
-              children: List.generate(column, (j) {
+              children: List.generate(widget.column, (j) {
+                if (j >= widget.matrix[i].length) {
+                  return Container(); // пустой контейнер для дополнительных столбцов
+                }
                 return GestureDetector(
                   onTap: (){
                     currentMainNum = matrix[i][j];
@@ -113,12 +98,12 @@ class _BasicMethodState extends State<BasicMethod> {
                       _selectedColumn = j;
                     });
                   },
-                    child: Container(
-                      color: _selectedRow == i && _selectedColumn == j
-                          ? Colors.blue
-                          : Colors.white,
-                      child: Text(widget.matrix[i][j].toString()),
-                    ),
+                  child: Container(
+                    color: _selectedRow == i && _selectedColumn == j
+                        ? Colors.blue
+                        : Colors.white,
+                    child: Text(widget.matrix[i][j].toString()),
+                  ),
                 );
               }),
             );
@@ -138,15 +123,17 @@ class _BasicMethodState extends State<BasicMethod> {
             onTap: (){
               pastMatrix = matrix;
              // print(matrix);
-              createNewMatrixx(matrix, matrix[_selectedRow], _selectedRow, currentMainNum, _selectedColumn);
+              createNewMatrix(matrix, matrix[_selectedRow], _selectedRow, currentMainNum, _selectedColumn);
               //print(newMatrix);
               matrix = newMatrix;
-              removeColumn(matrix, _selectedColumn);
+             // removeColumn(matrix, _selectedColumn);
              // print(_selectedColumn);
               //print(_selectedRow);
               print(newMatrix);
               setState(() {
-
+                widget.matrix = matrix;
+                widget.row = row;
+                widget.column = column;
               });
             },
             child: Text("Вперед"),)
